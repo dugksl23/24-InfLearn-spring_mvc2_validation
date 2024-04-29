@@ -49,19 +49,23 @@ public class ValidationItemControllerV1 {
     }
 
     @PostMapping("/add")
-    public String addItem(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItem(@ModelAttribute Item item, RedirectAttributes redirectAttributes, Model model) {
 
+        //검증 오류 결과를 보관
+        Map<String, String> errors = new HashMap<>();
 
         // 필드 검증 로직
         if (!StringUtils.hasText(item.getItemName()) || Strings.isNullOrEmpty(item.getItemName())) {
-            bindingResult.addError(new FieldError("item", "itemName", "Item name is required"));
-            // objectName 은 valid 의 대상이되는 객체명 이름
+            log.info("itemName : {}", item.getItemName());
+            errors.put("itemName", "상품 이름은 필수입니다. ");
         }
         if (item.getPrice() == null || item.getPrice() < 999 || item.getPrice() > 1000000) {
-            bindingResult.addError(new FieldError("item", "price", "Price must be between 0 and 9999"));
+            log.info("price : {}", item.getPrice());
+            errors.put("price", "가격은 1,000 ~ 1,000,000 까지 허용합니다.");
         }
         if (Optional.ofNullable(item.getQuantity()).isEmpty() || item.getQuantity() == 0 || item.getQuantity() > 9999) {
-            bindingResult.addError(new FieldError("iten", "quantity", "Quantity must be between 0 and 9999"));
+            log.info("quantity : {}", item.getQuantity());
+            errors.put("quantity", "수량은 최대 9,999 까지 허용합니다.");
         }
 
         // 특정 필드가 아닌 복합 룰 검증
@@ -70,20 +74,16 @@ public class ValidationItemControllerV1 {
             int orderItemPrice = item.getPrice() * item.getQuantity();
 
             if (orderItemPrice < 10000) {
-                // field error가 아닌 경우에는, object error로 진행한다.
-                bindingResult.addError(new ObjectError("item", "globalError 최소 주문 금액은 10,000 이상입니다. 현재 주문 금액 : " + orderItemPrice));
+                errors.put("globalError", "최소 주문 금액은 10,000 이상입니다. 현재 주문 금액 : " + orderItemPrice);
             }
         }
 
 
         // 검증 실패시 다시 입력 Form 으로 Redirect
-        if (bindingResult.hasErrors()) {
-            log.info("errors : {}", bindingResult);
-            //model.addAttribute("errors", bindingResult);
-            //　bindingResult는 model에 담지 않아도 된다.
-            // 자동으로 myView.render(model, bindingResult) 함꼐 넘어간다.
-            return "validation/v1/addForm";
-            // 검증 실패시 입력 Page로 다시 보내기.
+        if (!errors.isEmpty()) {
+            log.info("errors : {}", errors.toString());
+            model.addAttribute("errors", errors);
+            return "validation/v1/addForm"; // 검증 실패시 입력 Page로 다시 보내기.
         }
 
         // 성공 로직
