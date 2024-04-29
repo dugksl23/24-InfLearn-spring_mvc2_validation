@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -46,7 +47,9 @@ public class ValidationItemControllerV2 {
     }
 
     @PostMapping("/add")
-    public String addItem(@ModelAttribute Item item, RedirectAttributes redirectAttributes, Model model) {
+    public String addItem(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+        //매개변수 순서는, @ModelAttribute Item item, 다음인 BindingResult bindingResult 로 와야 한다.
+        // bindingResult는 모델의 객체 바인딩 된 값에 대한 결과를 담고 있기에 다음에 두어야 한다.
 
         //검증 오류 결과를 보관
         Map<String, String> errors = new HashMap<>();
