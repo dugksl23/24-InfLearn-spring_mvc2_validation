@@ -63,7 +63,7 @@
 <!--            <input type="text" id="quantity" th:field="*{quantity}" class="form-control" placeholder="수량을 입력하세요">-->
 <!--            <div class="field-error" th:if="${errors?.containsKey('quantity')}" th:text="${errors['quantity']}"></div>-->
                 <input type="text" id="quantity" th:field="*{quantity}" class="form-control" placeholder="수량 입력하시오.">
-                <div class="field-error" th:errors="*{price}"></div>
+                <div class="field-error" th:errors="*{quantity}"></div>
         </div>
 
         <hr class="my-4">

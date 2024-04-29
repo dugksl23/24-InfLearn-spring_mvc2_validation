@@ -52,15 +52,17 @@ public class ValidationItemControllerV2 {
     public String addItem(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         //매개변수 순서는, @ModelAttribute Item item, 다음인 BindingResult bindingResult 로 와야 한다.
-        // bindingResult는 모델의 객체 바인딩 된 값에 대한 결과를 담고 있기에 다음에 두어야 한다.
+        // bindingResult는 모델의 객체 바인딩 된 값의 문제에  대한 결과를 담고 있기에 다음에 두어야 한다.
+        // bindingResult에 의해서 controller가 정상 호출되며, 404 error 페이지로 client를 redirect 시키지 않는다.
 
         // 필드 검증 로직
         if (!StringUtils.hasText(item.getItemName()) || Strings.isNullOrEmpty(item.getItemName())) {
-
             bindingResult.addError(new FieldError("item", "itemName", "Item name is required"));
             // objectName 은 valid 의 대상이되는 객체명 이름
-        }
-        if (item.getPrice() == null || item.getPrice() < 999 || item.getPrice() > 1000000) {
+            }
+        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
+            //상품의 가격이 1000보다 작거나 같은 경우
+            //상품의 가격이 1000000보다 큰 경우
             bindingResult.addError(new FieldError("item", "price", "Price must be between 0 and 9999"));
         }
         if (Optional.ofNullable(item.getQuantity()).isEmpty() || item.getQuantity() == 0 || item.getQuantity() > 9999) {
@@ -93,7 +95,7 @@ public class ValidationItemControllerV2 {
         redirectAttributes.addAttribute("itemId", savedItem.getId());
         redirectAttributes.addAttribute("status", true);
 
-        return "redirect:/validation/v1/items/{itemId}";
+        return "redirect:/validation/v2/items/{itemId}";
 
     }
 
