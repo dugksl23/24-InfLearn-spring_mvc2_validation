@@ -61,18 +61,17 @@ public class ValidationItemControllerV1 {
             errors.put("price", "가격은 1,000 ~ 1,000,000 까지 허용합니다.");
         }
         if (Optional.ofNullable(item.getQuantity()).isEmpty() || item.getQuantity() == 0 || item.getQuantity() > 9999) {
-            log.info("Quantity : {}", item.getQuantity());
+            log.info("quantity : {}", item.getQuantity());
             errors.put("quantity", "수량은 최대 9,999 까지 허용합니다.");
         }
 
         // 특정 필드가 아닌 복합 룰 검증
         if (item.getPrice() != null && item.getQuantity() != null) {
-            // 기존의 and　→ or 문법으로 교
+            // 기존의 and　→ or 문법으로 바꿈
             int orderItemPrice = item.getPrice() * item.getQuantity();
-            ;
+
             if (orderItemPrice < 10000) {
-                errors.put("limitOrderPriceError", "최소 주문 금액은 10,000 이상입니다.");
-                errors.put("currentOrderPrice", "현재 주문 금액 : " + orderItemPrice);
+                errors.put("globalError", "최소 주문 금액은 10,000 이상입니다. 현재 주문 금액 : " + orderItemPrice);
             }
         }
 
