@@ -26,7 +26,8 @@
     <form action="item.html" th:action th:object="${item}" method="post">
         <!--  ?은 null 이면 실행하지 않겠다는 타임리프 문법 -->
         <div th:if="${#fields?.hasGlobalErrors()}">
-            <p class="field-error" th:each="error : ${#fields.hasGlobalErrors()}" th:text="${error}">글로벌 오류 메시
+            <p class="field-error" th:each="errors : ${#fields.globalErrors()}" th:text="${errors}">글로벌 오류 메시
+<!--            <p class="field-error" th:text="${errors['globalError']}">전체 오류 메시</div>-->
         </div>
 
         <div>
