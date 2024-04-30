@@ -79,7 +79,7 @@ public class ValidationItemControllerV2 {
             if (orderItemPrice < 10000) {
                 // field error가 아닌 경우에는, object error로 진행한다.
 //                bindingResult.addError(new ObjectError("item", "globalError 최소 주문 금액은 10,000 이상입니다. 현재 주문 금액 : " + orderItemPrice));
-                bindingResult.addError(new ObjectError("item", null, null, "globalError 최소 주문 금액은 10,000 이상입니다. 현재 주문 금액 : " + orderItemPrice));
+                bindingResult.addError(new ObjectError("item", null, null, "최소 주문 금액은 10,000 이상입니다. 현재 주문 금액 : " + orderItemPrice));
 
             }
         }
