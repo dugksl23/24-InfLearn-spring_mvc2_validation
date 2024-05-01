@@ -30,11 +30,17 @@ public class MessageCodesResolverTest {
         //-> 내부적으로 하기 코드의 흐름을 가진다.
         // new FieldError("item", "itemName", null, "false", messageCodeResolver, null, null);
 
-        Assertions.assertThat(strings).containsExactly(
-                "required.item.itemName",
-                "required.itemName",
-                "required.java.lang.String",
-                "required"
-        );
+        Assertions.assertThat(strings).containsExactly("required.item.itemName", "required.itemName", "required.java.lang.String", "required");
     }
+
+    @Test
+    public void messageCodeResolverFieldForOrderItemPrice() {
+        String[] strings = messageCodesResolver.resolveMessageCodes("orderItemPrice", "item", "", String.class);
+        System.out.println(Arrays.toString(strings));
+
+
+        //Assertions.assertThat(strings).containsExactly("required.item.itemName", "required.itemName", "required.java.lang.String", "required");
+    }
+
+
 }
