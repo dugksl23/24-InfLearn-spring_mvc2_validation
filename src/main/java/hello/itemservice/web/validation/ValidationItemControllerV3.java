@@ -58,7 +58,7 @@ public class ValidationItemControllerV3 {
         // 필드 검증 로직
         if (!StringUtils.hasText(item.getItemName()) || Strings.isNullOrEmpty(item.getItemName())) {
             // 3번째 파라미터는 reject Value를 포함시켜서 사용자 화면에 값을 유지키기 위함.
-            bindingResult.addError(new FieldError("item", "itemName", item.getItemName(), false, new String[]{"required"}, null, null));
+            bindingResult.addError(new FieldError("item", "itemName", item.getItemName(), false, new String[]{"required.item.itemName"}, null, null));
 //            bindingResult.addError(new FieldError("item", "itemName", "Item name is required"));
             // objectName 은 valid 의 대상이되는 객체명 이름
         }

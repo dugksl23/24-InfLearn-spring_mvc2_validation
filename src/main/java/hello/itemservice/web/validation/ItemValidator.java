@@ -2,11 +2,9 @@ package hello.itemservice.web.validation;
 
 import hello.itemservice.domain.item.Item;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.*;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 import java.util.Optional;
 
@@ -33,7 +31,9 @@ public class ItemValidator implements Validator {
         // bindingResult에 의해서 controller가 정상 호출되며, 404 error 페이지로 client를 redirect 시키지 않는다.
 
         // 필드 검증 로직
-        ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "itemName", "required");
+        //ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "itemName", "required");
+        bindingResult.rejectValue("itemName", "required");
+
 
         if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
             //상품의 가격이 1000보다 작거나 같은 경우
