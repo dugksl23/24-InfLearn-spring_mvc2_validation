@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,6 +25,14 @@ public class ValidationItemControllerV6 {
 
     private final ItemRepository itemRepository;
     private final ItemValidator itemValidator;
+
+    @InitBinder
+    public void init(WebDataBinder binder) {
+        log.info("init validation : {}", binder);
+        binder.addValidators(itemValidator);
+//        binder.addValidators(memberValidator);
+
+    }
 
 
     @GetMapping
@@ -46,14 +56,14 @@ public class ValidationItemControllerV6 {
     }
 
     @PostMapping("/add")
-    public String addItemV6(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItemV6(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         // 1. 비지니스 로직을 통한 검증 로직
         //    바인딩 에러 발생시 bindingResult에 fieldsError와 ObjectError에 담긴다.
-        boolean supports = itemValidator.supports(item.getClass());
-        if (supports) {
-            itemValidator.validate(item, bindingResult);
-        }
+//        boolean supports = itemValidator.supports(item.getClass());
+//        if (supports) {
+//            itemValidator.validate(item, bindingResult);
+//        }
 
         // 2. 바인딩 Error에 대한 분기점 처리는 비지니스 로직 수행 이후에 가능하다.
         if (bindingResult.hasErrors()) {
