@@ -48,6 +48,11 @@ public class ValidationItemControllerV5 {
     @PostMapping("/add")
     public String addItemv5(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
+        // 바인딩 Error에 대한 분기점 처리 먼저
+        if(bindingResult.hasErrors()){
+            return "validation/v5/addForm";
+        }
+
         //bindingResult는 이미 Target Object Name 를 알고 있다.
         log.info("Object Target : {}", bindingResult.getTarget());
         log.info("Object Name : {}", bindingResult.getObjectName());
