@@ -12,12 +12,12 @@ public class Item {
 
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "입력해주세요.")
     private String itemName;
-    @NotNull
+    @NotNull(message = "입력해주세요.")
     @Range(min = 1000, max = 1000000)
     private Integer price;
-    @NotNull
+    @NotNull(message = "입력해주세요.")
     @Max(9999)
     private Integer quantity;
 

@@ -22,7 +22,7 @@ public class ItemValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors bindingResult) {
-
+        log.info("들어와요?");
         Item item = (Item) o;
         //bindingResult는 Errors를 상속받았다. -> 부모는 자식을 담을 수 있다.
 
@@ -49,6 +49,7 @@ public class ItemValidator implements Validator {
 
         // 특정 필드가 아닌 복합 룰 검증
         if (item.getPrice() != null && item.getQuantity() != null) {
+            log.info("가격 * 수량 필드 : {}, {}", item.getPrice(), item.getQuantity());
             // 기존의 and　→ or 문법으로 바꿈
             int orderItemPrice = item.getPrice() * item.getQuantity();
 
