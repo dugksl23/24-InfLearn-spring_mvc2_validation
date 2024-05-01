@@ -101,7 +101,7 @@ public class ValidationItemControllerV5 {
         redirectAttributes.addAttribute("itemId", savedItem.getId());
         redirectAttributes.addAttribute("status", true);
 
-        return "redirect:/validation/v5/items/{itemId}";
+        return "redirect:/validation/V5/items/{itemId}";
 
     }
 
