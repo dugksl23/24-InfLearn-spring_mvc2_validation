@@ -23,7 +23,7 @@
         <h2 th:text="#{page.addItem}">상품 등록</h2>
     </div>
 
-    <form action="item.html" th:action th:object="${item}" method="post">
+    <form action="item.html" th:action th:object="${itemSaveDto}" method="post">
         <!--  ?은 null 이면 실행하지 않겠다는 타임리프 문법 -->
         <div th:if="${#fields?.hasGlobalErrors()}">
             <p class="field-error" th:each="errors : ${#fields.globalErrors()}" th:text="${errors}">글로벌 오류 메시지
