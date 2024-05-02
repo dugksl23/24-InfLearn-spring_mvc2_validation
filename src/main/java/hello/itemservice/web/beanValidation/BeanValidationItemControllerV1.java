@@ -38,7 +38,7 @@ public class BeanValidationItemControllerV1 {
     }
 
     @GetMapping("/{itemId}")
-    public String item(@PathVariable long itemId, Model model) {
+    public String item(@PathVariable("itemId") long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
         return "/beanValidation/v3/item";
@@ -57,15 +57,7 @@ public class BeanValidationItemControllerV1 {
         //    글로벌 에러는 별도 자바 코드를 작성한다.
         // 2. FieldError 는 Bean Validation
         // 3. Object는 Error 는 Java Code 로 해결
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            // 기존의 and　→ or 문법으로 바꿈
-            int orderItemPrice = item.getPrice() * item.getQuantity();
-
-            if (orderItemPrice < 10000) {
-                bindingResult.reject("orderItemPrice", new Object[]{10000, orderItemPrice, 10000}, null);
-            }
-        }
-
+        validateOrderItemTotalPrice(item, bindingResult);
 
         // 2. 바인딩 Error에 대한 분기점 처리는 비지니스 로직 수행 이후에 가능하다.
         if (bindingResult.hasErrors()) {
@@ -80,6 +72,17 @@ public class BeanValidationItemControllerV1 {
 
     }
 
+    private static void validateOrderItemTotalPrice(Item item, BindingResult bindingResult) {
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            // 기존의 and　→ or 문법으로 바꿈
+            int orderItemPrice = item.getPrice() * item.getQuantity();
+
+            if (orderItemPrice < 10000) {
+                bindingResult.reject("orderItemPrice", new Object[]{10000, orderItemPrice, 10000}, null);
+            }
+        }
+    }
+
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
@@ -88,7 +91,12 @@ public class BeanValidationItemControllerV1 {
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
+    public String edit(@PathVariable Long itemId, @Valid @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+
+        validateOrderItemTotalPrice(item, bindingResult);
+        if(bindingResult.hasErrors()){
+            return "/beanValidation/v3/editForm";
+        }
         itemRepository.update(itemId, item);
         return "redirect:/bean/validation/v3/items/{itemId}";
     }
