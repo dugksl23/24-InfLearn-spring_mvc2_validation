@@ -22,7 +22,6 @@ public class ItemValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors bindingResult) {
-        log.info("item Bean Validation active : {}", o.toString());
         Item item = (Item) o;
         //bindingResult는 Errors를 상속받았다. -> 부모는 자식을 담을 수 있다.
 

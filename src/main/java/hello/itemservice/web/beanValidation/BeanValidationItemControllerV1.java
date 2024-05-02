@@ -2,14 +2,13 @@ package hello.itemservice.web.beanValidation;
 
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
-import hello.itemservice.web.validation.ItemValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.bind.BindException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -61,6 +60,7 @@ public class BeanValidationItemControllerV1 {
 
         // 2. 바인딩 Error에 대한 분기점 처리는 비지니스 로직 수행 이후에 가능하다.
         if (bindingResult.hasErrors()) {
+            log.info(bindingResult.toString());
             return "beanValidation/v3/addForm";
         }
         // 3. 성공 로직
@@ -72,18 +72,8 @@ public class BeanValidationItemControllerV1 {
 
     }
 
-    private static void validateOrderItemTotalPrice(Item item, BindingResult bindingResult) {
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            // 기존의 and　→ or 문법으로 바꿈
-            int orderItemPrice = item.getPrice() * item.getQuantity();
-
-            if (orderItemPrice < 10000) {
-                bindingResult.reject("orderItemPrice", new Object[]{10000, orderItemPrice, 10000}, null);
-            }
-        }
-    }
-
     @GetMapping("/{itemId}/edit")
+
     public String editForm(@PathVariable Long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
@@ -94,11 +84,24 @@ public class BeanValidationItemControllerV1 {
     public String edit(@PathVariable Long itemId, @Valid @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         validateOrderItemTotalPrice(item, bindingResult);
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
+            log.info(bindingResult.toString());
             return "/beanValidation/v3/editForm";
         }
         itemRepository.update(itemId, item);
         return "redirect:/bean/validation/v3/items/{itemId}";
+    }
+
+    private static void validateOrderItemTotalPrice(Item item, BindingResult bindingResult) {
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            // 기존의 and　→ or 문법으로 바꿈
+            int orderItemPrice = item.getPrice() * item.getQuantity();
+
+            if (orderItemPrice < 10000) {
+                bindingResult.reject("orderItemPrice", new Object[]{10000, orderItemPrice, 10000}, null);
+
+            }
+        }
     }
 
 }
