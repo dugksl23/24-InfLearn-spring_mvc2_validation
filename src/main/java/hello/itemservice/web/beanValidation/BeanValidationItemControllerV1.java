@@ -2,6 +2,8 @@ package hello.itemservice.web.beanValidation;
 
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
+import hello.itemservice.domain.item.SaveCheck;
+import hello.itemservice.domain.item.UpdateCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.bind.BindException;
@@ -49,7 +51,7 @@ public class BeanValidationItemControllerV1 {
         return "/beanValidation/v3/addForm";
     }
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItem(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         // 1. 특정 필드가 아닌 복합 룰 검증와 같은
@@ -72,16 +74,47 @@ public class BeanValidationItemControllerV1 {
 
     }
 
-    @GetMapping("/{itemId}/edit")
+    @PostMapping("/add")
+    public String addItem2(@Validated(SaveCheck.class) @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
+        validateOrderItemTotalPrice(item, bindingResult);
+
+        // 2. 바인딩 Error에 대한 분기점 처리는 비지니스 로직 수행 이후에 가능하다.
+        if (bindingResult.hasErrors()) {
+            log.info(bindingResult.toString());
+            return "beanValidation/v3/addForm";
+        }
+        // 3. 성공 로직
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+
+        return "redirect:/bean/validation/v3/items/{itemId}";
+
+    }
+
+
+    @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
         return "/beanValidation/v3/editForm";
     }
 
-    @PostMapping("/{itemId}/edit")
+//    @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @Valid @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+
+        validateOrderItemTotalPrice(item, bindingResult);
+        if (bindingResult.hasErrors()) {
+            log.info(bindingResult.toString());
+            return "/beanValidation/v3/editForm";
+        }
+        itemRepository.update(itemId, item);
+        return "redirect:/bean/validation/v3/items/{itemId}";
+    }
+
+    @PostMapping("/{itemId}/edit")
+    public String edit2(@PathVariable Long itemId, @Validated(UpdateCheck.class) @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         validateOrderItemTotalPrice(item, bindingResult);
         if (bindingResult.hasErrors()) {
