@@ -18,7 +18,7 @@ public class Item {
     @NotBlank(groups = {SaveCheck.class, UpdateCheck.class, })
     private String itemName;
     @NotNull(groups = {SaveCheck.class, UpdateCheck.class, })
-    @Range(min = 1000, max = 1000000, groups = {SaveCheck.class})
+    @Range(min = 1000, max = 1000000, groups = {SaveCheck.class, UpdateCheck.class})
     private Integer price;
 
     @NotNull(message = "입력해주세요.", groups = {SaveCheck.class, UpdateCheck.class, })
