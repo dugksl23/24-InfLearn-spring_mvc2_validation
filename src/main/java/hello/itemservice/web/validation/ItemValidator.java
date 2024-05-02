@@ -47,14 +47,14 @@ public class ItemValidator implements Validator {
             bindingResult.rejectValue("quantity", "max.item.quantity", new Object[]{0, 9999}, null);
         }
 
-        // 특정 필드가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            // 기존의 and　→ or 문법으로 바꿈
-            int orderItemPrice = item.getPrice() * item.getQuantity();
-
-            if (orderItemPrice < 10000) {
-                bindingResult.reject("orderItemPrice", new Object[]{10000, orderItemPrice, 10000}, null);
-            }
-        }
+//        // 특정 필드가 아닌 복합 룰 검증
+//        if (item.getPrice() != null && item.getQuantity() != null) {
+//            // 기존의 and　→ or 문법으로 바꿈
+//            int orderItemPrice = item.getPrice() * item.getQuantity();
+//
+//            if (orderItemPrice < 10000) {
+//                bindingResult.reject("orderItemPrice", new Object[]{10000, orderItemPrice, 10000}, null);
+//            }
+//        }
     }
 }

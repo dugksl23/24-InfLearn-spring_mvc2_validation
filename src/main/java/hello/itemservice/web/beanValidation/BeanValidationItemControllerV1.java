@@ -53,12 +53,19 @@ public class BeanValidationItemControllerV1 {
     @PostMapping("/add")
     public String addItem(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
-        // 1. 비지니스 로직을 통한 검증 로직
-        //    바인딩 에러 발생시 bindingResult에 fieldsError와 ObjectError에 담긴다.
-//        boolean supports = itemValidator.supports(item.getClass());
-//        if (supports) {
-//            itemValidator.validate(item, bindingResult);
-//        }
+        // 1. 특정 필드가 아닌 복합 룰 검증와 같은
+        //    글로벌 에러는 별도 자바 코드를 작성한다.
+        // 2. FieldError 는 Bean Validation
+        // 3. Object는 Error 는 Java Code 로 해결
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            // 기존의 and　→ or 문법으로 바꿈
+            int orderItemPrice = item.getPrice() * item.getQuantity();
+
+            if (orderItemPrice < 10000) {
+                bindingResult.reject("orderItemPrice", new Object[]{10000, orderItemPrice, 10000}, null);
+            }
+        }
+
 
         // 2. 바인딩 Error에 대한 분기점 처리는 비지니스 로직 수행 이후에 가능하다.
         if (bindingResult.hasErrors()) {
